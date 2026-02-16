@@ -35,18 +35,19 @@ func (d *FeedDaoRedis) InsertWithPipeline(ctx context.Context, reading models.Me
 
 	data := models.MeterReadingToStreamMap(reading)
 
-	pipe.XAdd(ctx, &goredis.XAddArgs{
-		Stream: d.KeySchema.GlobalFeedKey(),
-		MaxLen: GlobalMaxFeedLength,
-		Approx: true,
-		Values: data,
-	})
-	pipe.XAdd(ctx, &goredis.XAddArgs{
-		Stream: d.KeySchema.FeedKey(reading.SiteID),
-		MaxLen: SiteMaxFeedLength,
-		Approx: true,
-		Values: data,
-	})
+	// START Challenge #6
+	// Add the meter reading data to two Redis Streams using XADD:
+	//
+	// 1. The global feed stream (d.KeySchema.GlobalFeedKey()) with
+	//    MaxLen: GlobalMaxFeedLength and Approx: true
+	// 2. The site-specific feed stream (d.KeySchema.FeedKey(reading.SiteID)) with
+	//    MaxLen: SiteMaxFeedLength and Approx: true
+	//
+	// Hint: Use pipe.XAdd(ctx, &goredis.XAddArgs{
+	//     Stream: ..., MaxLen: ..., Approx: true, Values: data,
+	// })
+	_ = data // TODO: remove after implementing
+	// END Challenge #6
 
 	if execute {
 		_, err := pipe.Exec(ctx)

@@ -68,6 +68,15 @@ func (d *CapacityReportDaoRedis) GetReport(ctx context.Context, limit int) (mode
 }
 
 func (d *CapacityReportDaoRedis) GetRank(ctx context.Context, siteID int) (int64, error) {
-	key := d.KeySchema.CapacityRankingKey()
-	return d.Client.ZRevRank(ctx, key, strconv.Itoa(siteID)).Result()
+	// START Challenge #4
+	// Return the rank of the site in the capacity ranking sorted set.
+	//
+	// Use ZREVRANK to get the rank (0-based, highest score = rank 0).
+	// The member in the sorted set is the site ID as a string.
+	//
+	// Hint: Use d.KeySchema.CapacityRankingKey() for the key
+	// Hint: Use d.Client.ZRevRank() with strconv.Itoa(siteID) as the member
+	_ = siteID // TODO: remove after implementing
+	return 0, nil
+	// END Challenge #4
 }

@@ -11,7 +11,8 @@ type MeterReadingDaoRedis struct {
 	metricDao   *MetricDaoRedisTimeseries
 	capacityDao *CapacityReportDaoRedis
 	feedDao     *FeedDaoRedis
-	statsDao    *SiteStatsDaoRedis
+	// Uncomment for Challenge #3
+	// statsDao *SiteStatsDaoRedis
 }
 
 func NewMeterReadingDao(base RedisDao) *MeterReadingDaoRedis {
@@ -20,7 +21,8 @@ func NewMeterReadingDao(base RedisDao) *MeterReadingDaoRedis {
 		metricDao:   NewMetricTimeseriesDao(base),
 		capacityDao: NewCapacityReportDao(base),
 		feedDao:     NewFeedDao(base),
-		statsDao:    NewSiteStatsDao(base),
+		// Uncomment for Challenge #3
+		// statsDao: NewSiteStatsDao(base),
 	}
 }
 
@@ -38,5 +40,9 @@ func (d *MeterReadingDaoRedis) AddWithPipeline(ctx context.Context, reading mode
 	if err := d.feedDao.Insert(ctx, reading); err != nil {
 		return err
 	}
+	// Uncomment for Challenge #3
+	// if err := d.statsDao.Update(ctx, reading); err != nil {
+	// 	return err
+	// }
 	return nil
 }

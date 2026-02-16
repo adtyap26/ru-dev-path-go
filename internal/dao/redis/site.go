@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"strconv"
 
 	goredis "github.com/redis/go-redis/v9"
 
@@ -54,22 +53,19 @@ func (d *SiteDaoRedis) FindByID(ctx context.Context, siteID int) (models.Site, e
 }
 
 func (d *SiteDaoRedis) FindAll(ctx context.Context) ([]models.Site, error) {
-	siteIDs, err := d.Client.SMembers(ctx, d.KeySchema.SiteIDsKey()).Result()
-	if err != nil {
-		return nil, err
-	}
+	// START Challenge #1
+	// Use SMEMBERS to get all site IDs from the site IDs key,
+	// then use HGETALL for each site ID to get the site hash.
+	// Finally, convert each hash to a Site model using models.SiteFromFlatMap.
+	//
+	// Hint: Use d.KeySchema.SiteIDsKey() and d.KeySchema.SiteHashKey(id)
+	// Hint: Use d.Client.SMembers() and d.Client.HGetAll()
+	siteHashes := make([]map[string]string, 0) // TODO: populate this
+	// END Challenge #1
 
-	sites := make([]models.Site, 0, len(siteIDs))
-	for _, idStr := range siteIDs {
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			continue
-		}
-		result, err := d.Client.HGetAll(ctx, d.KeySchema.SiteHashKey(id)).Result()
-		if err != nil {
-			return nil, err
-		}
-		site, err := models.SiteFromFlatMap(result)
+	sites := make([]models.Site, 0, len(siteHashes))
+	for _, hash := range siteHashes {
+		site, err := models.SiteFromFlatMap(hash)
 		if err != nil {
 			return nil, err
 		}

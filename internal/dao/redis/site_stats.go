@@ -8,7 +8,8 @@ import (
 	goredis "github.com/redis/go-redis/v9"
 
 	"redisolar-go/internal/models"
-	"redisolar-go/internal/scripts"
+	// Uncomment for Challenge #3
+	// "redisolar-go/internal/scripts"
 )
 
 const WeekSeconds = 60 * 60 * 24 * 7
@@ -62,14 +63,23 @@ func (d *SiteStatsDaoRedis) UpdateWithPipeline(ctx context.Context, reading mode
 		execute = true
 	}
 
-	reportingTime := time.Now().UTC().Format(time.RFC3339)
-	pipe.HSet(ctx, key, models.SiteStatsLastReportingTime, reportingTime)
-	pipe.HIncrBy(ctx, key, models.SiteStatsCount, 1)
-	pipe.Expire(ctx, key, time.Duration(WeekSeconds)*time.Second)
-
-	scripts.UpdateIfGreater(ctx, pipe, key, models.SiteStatsMaxWH, reading.WHGenerated)
-	scripts.UpdateIfLess(ctx, pipe, key, models.SiteStatsMinWH, reading.WHGenerated)
-	scripts.UpdateIfGreater(ctx, pipe, key, models.SiteStatsMaxCapacity, reading.CurrentCapacity())
+	// START Challenge #3
+	// Use a pipeline to update site stats efficiently with the following steps:
+	//
+	// 1. Set the last reporting time using pipe.HSet() with models.SiteStatsLastReportingTime
+	//    (use time.Now().UTC().Format(time.RFC3339) for the value)
+	// 2. Increment the count using pipe.HIncrBy() with models.SiteStatsCount
+	// 3. Set the key expiration using pipe.Expire() with WeekSeconds
+	// 4. Use Lua scripts for atomic compare-and-update operations:
+	//    - scripts.UpdateIfGreater() for models.SiteStatsMaxWH with reading.WHGenerated
+	//    - scripts.UpdateIfLess() for models.SiteStatsMinWH with reading.WHGenerated
+	//    - scripts.UpdateIfGreater() for models.SiteStatsMaxCapacity with reading.CurrentCapacity()
+	//
+	// Hint: The scripts package provides UpdateIfGreater(ctx, pipe, key, field, value)
+	//        and UpdateIfLess(ctx, pipe, key, field, value)
+	_ = key     // TODO: remove after implementing
+	_ = reading // TODO: remove after implementing
+	// END Challenge #3
 
 	if execute {
 		_, err := pipe.Exec(ctx)

@@ -53,13 +53,20 @@ func (d *MetricDaoRedis) InsertWithPipeline(ctx context.Context, reading models.
 func (d *MetricDaoRedis) insertMetric(ctx context.Context, siteID int, value float64, unit models.MetricUnit, t time.Time, pipe goredis.Pipeliner) {
 	metricKey := d.KeySchema.DayMetricKey(siteID, unit, t)
 	minuteOfDay := getDayMinute(t)
-	member := fmt.Sprintf("%.2f:%d", value, minuteOfDay)
 
-	pipe.ZAdd(ctx, metricKey, goredis.Z{
-		Score:  float64(minuteOfDay),
-		Member: member,
-	})
-	pipe.Expire(ctx, metricKey, time.Duration(MetricExpirationSeconds)*time.Second)
+	// START Challenge #2
+	// Insert a metric into a sorted set.
+	//
+	// The member should be a string in the format "%.2f:%d" (value:minuteOfDay).
+	// The score should be the minuteOfDay (as float64).
+	// Also set an expiration on the key using MetricExpirationSeconds.
+	//
+	// Hint: Use pipe.ZAdd() with goredis.Z{Score: ..., Member: ...}
+	// Hint: Use pipe.Expire() with time.Duration(MetricExpirationSeconds)*time.Second
+	// Hint: Use fmt.Sprintf("%.2f:%d", value, minuteOfDay) for the member string
+	_ = metricKey    // TODO: remove after implementing
+	_ = minuteOfDay  // TODO: remove after implementing
+	// END Challenge #2
 }
 
 func (d *MetricDaoRedis) GetRecent(ctx context.Context, siteID int, unit models.MetricUnit, t time.Time, limit int) ([]models.Measurement, error) {

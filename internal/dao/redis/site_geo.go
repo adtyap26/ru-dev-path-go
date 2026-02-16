@@ -101,39 +101,31 @@ func (d *SiteGeoDaoRedis) findByGeo(ctx context.Context, query models.GeoQuery) 
 }
 
 func (d *SiteGeoDaoRedis) findByGeoWithCapacity(ctx context.Context, query models.GeoQuery) ([]models.Site, error) {
-	locations, err := d.Client.GeoRadius(ctx, d.KeySchema.SiteGeoKey(),
-		query.Coordinate.Lng, query.Coordinate.Lat,
-		&goredis.GeoRadiusQuery{
-			Radius: query.Radius,
-			Unit:   string(query.RadiusUnit),
-		}).Result()
-	if err != nil {
-		return nil, err
-	}
+	// START Challenge #5
+	// Step 1: Get site IDs matching the GEO query using GEORADIUS.
+	//
+	// Hint: Use d.Client.GeoRadius() with d.KeySchema.SiteGeoKey()
+	// The result is []goredis.GeoLocation where each has a .Name field (the site ID string)
+	var locations []goredis.GeoLocation // TODO: populate using GeoRadius
+	_ = query                           // TODO: remove after implementing
+	// END Challenge #5
 
-	capacityKey := d.KeySchema.CapacityRankingKey()
 	pipe := d.Client.Pipeline()
-	cmds := make([]*goredis.FloatCmd, len(locations))
-	for i, loc := range locations {
-		cmds[i] = pipe.ZScore(ctx, capacityKey, loc.Name)
-	}
-	_, _ = pipe.Exec(ctx)
 
-	// Collect site IDs with capacity above threshold
-	var filteredIDs []int
-	for i, loc := range locations {
-		score, err := cmds[i].Result()
-		if err != nil {
-			continue
-		}
-		if score > CapacityThreshold {
-			id, err := strconv.Atoi(loc.Name)
-			if err != nil {
-				continue
-			}
-			filteredIDs = append(filteredIDs, id)
-		}
-	}
+	// START Challenge #5
+	// Step 2: Use a pipeline to get the capacity score (ZSCORE) for each site.
+	//
+	// For each location, call pipe.ZScore() with the capacity ranking key and
+	// the location's Name. Store the FloatCmd results to check later.
+	//
+	// After pipe.Exec(), filter sites whose score > CapacityThreshold (0.2).
+	//
+	// Hint: Use d.KeySchema.CapacityRankingKey() for the capacity sorted set key
+	// Hint: Use pipe.ZScore(ctx, capacityKey, loc.Name)
+	var filteredIDs []int // TODO: populate with site IDs that have excess capacity
+	_ = locations        // TODO: remove after implementing
+	_ = pipe             // TODO: remove after implementing
+	// END Challenge #5
 
 	// Fetch site hashes with pipeline
 	pipe2 := d.Client.Pipeline()
