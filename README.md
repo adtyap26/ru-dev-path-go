@@ -1,6 +1,6 @@
 # RediSolar Go
 
-A Go port of the sample application codebase for RU102PY, [Redis for Python Developers](https://university.redis.io/learningpath/ikoq5va7id3qko) on [Redis University](https://university.redis.com).
+A Go port of the sample application codebase for RU102PY, [Redis for Python Developers](https://github.com/redislabs-training/ru-dev-path-py.git) on [Redis University](https://university.redis.com).
 
 This project implements the same RediSolar solar energy monitoring application using Go instead of Python/Flask. It is wire-compatible with the original Python version -- same Redis key prefix (`ru102py-app`), same REST API contract, and the same Vue.js frontend.
 
