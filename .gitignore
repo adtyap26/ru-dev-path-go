@@ -1,0 +1,19 @@
+# Build artifacts
+bin/
+static/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Environment
+.env
+
+# Frontend (handled by frontend/.gitignore)
+frontend/node_modules/
+frontend/dist/
