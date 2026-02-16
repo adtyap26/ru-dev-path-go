@@ -240,4 +240,4 @@ On the `learning` branch, challenge tests are skipped by default with `t.Skip("R
 
 ## License
 
-This project is released under the MIT license.
+This project is released under the GPL3 license.
