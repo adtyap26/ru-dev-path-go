@@ -17,7 +17,7 @@ test:
 	go test ./...
 
 frontend:
-	cd frontend && npm install && npm run build
+	cd frontend && npm run build
 	rm -rf static
 	cp -r frontend/dist/static static
 	cp frontend/dist/index.html static/

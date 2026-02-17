@@ -19,7 +19,7 @@ func Load() Config {
 		RedisKeyPrefix: getEnv("REDIS_KEY_PREFIX", "ru102py-app"),
 		RedisUsername:  os.Getenv("REDISOLAR_REDIS_USERNAME"),
 		RedisPassword:  os.Getenv("REDISOLAR_REDIS_PASSWORD"),
-		UseGeoSiteAPI:  getEnv("USE_GEO_SITE_API", "true") == "true",
+		UseGeoSiteAPI:  getEnv("USE_GEO_SITE_API", "false") == "true",
 		ServerPort:     getEnv("SERVER_PORT", "8081"),
 	}
 	return c
